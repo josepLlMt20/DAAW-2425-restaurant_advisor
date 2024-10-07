@@ -1,0 +1,21 @@
+//- INDENTATION is used to nest html tags creating the tree structure
+//- div.wrapper -> <div class=”wrapper”> </div>
+div.wrapper
+ //- Interpolation within the HTML: #{}
+ p.hello Hello, my name is #{name}. My dog's name is #{dog}
+ //- html element with "id=identificador"
+ span#identificador uso de indentificadores
+ div
+ //- () is used to add HTML attributes to the HTML element
+ //- `` allows normal JS interpolation
+ img(src="https://picsum.photos/200" alt=`whatever ${dog}`)
+h2
+ //- To add a text without html element we use | 
+ //- this will retrieve: Hello <em> value_of_name </em>
+ | Hello
+ em #{name}
+
+//- to inject a JS line of code it we put a "-" at the front 
+
+- const upDog = dog.toUpperCase();
+ p.classy Hello #{upDog}

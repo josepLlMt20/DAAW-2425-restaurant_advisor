@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    title #{title}
+    link(rel='stylesheet', href='/css/style.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='icon', href='data:;base64,iVBORw0KGgo=')
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+  body
+    block header
+      nav.navbar.navbar-expand-sm.bg-body-tertiary(data-bs-theme="dark")
+        div.container-fluid
+          a.navbar-brand(href='#')
+            img(src="/icons/logo.svg" alt="" width="140" height="40" title="Bootstrap")
+          button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+          .collapse.navbar-collapse#navbarNav
+            ul.navbar-nav
+              each item in h.menu
+                li.nav-item
+                  a.nav-link(href=`#`)
+                    span #{item.title}
+            .form-inline
+              input.form-control.mr-sm-2(type="text" placeholder="Coffee, beer..." name="search")
+              .search__results
+
+    .content
+      block messages
+        .flashes
+          if flashes
+            - const categories = Object.keys(flashes)
+            each category in categories
+              each message in flashes[category]
+                .alert(class=`${category}`)
+                  != message
+                  span.closebtn(onClick="this.parentElement.remove()") &times;
+      block content
+
+    block scripts
+      script(src="/dist/jquery-3.7.1.min.js")
+      script(src="/dist/bootstrap.bundle.min.js")
+      script(src="/dist/app.bundle.js")

@@ -1,0 +1,65 @@
+.content {
+  padding: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.search__results {
+  background: white;
+  position: absolute;
+  width: 40%;
+  top: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.flashes {
+  margin: 25px;
+}
+
+.alert {
+  padding: 20px;
+  color: white !important;
+  animation-name: flashElement;
+  animation-duration: 1s;
+}
+
+.alert.error {
+  --flash-color: #f44336;
+  background-color: var(--flash-color);
+}
+
+.alert.info {
+  --flash-color: #2196F3;
+  background-color: var(--flash-color);
+}
+
+.alert.warning {
+  --flash-color: #ff9800;
+  background-color: var(--flash-color);
+}
+
+.alert.success {
+  --flash-color: #4CAF50;
+  background-color: var(--flash-color);
+}
+
+@keyframes flashElement {
+  from {background-color: white;}
+  to {background-color: var(--flash-color);}
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
