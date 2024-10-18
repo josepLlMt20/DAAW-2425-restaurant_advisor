@@ -35,4 +35,8 @@ router.post('/add/:id',
     catchErrors(storeController.updateStore)
 );
 
+//***API REST --> Functions to be consumed by the front end via AJAX
+//req.query -> /api/v1/search?q=hola
+router.get('/api/v1/search', catchErrors(storeController.searchStores));
+
 module.exports = router;

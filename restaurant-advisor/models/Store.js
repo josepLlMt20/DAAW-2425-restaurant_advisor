@@ -24,6 +24,12 @@ const storeSchema = new mongoose.Schema({
     photo: String
 });
 
+// *********INDEXES**********
+storeSchema.index({
+    name: 'text', //we will search in the name attribute
+    description: 'text' //we will search in the desc. attribute
+});
+
 // ********PRE-SAVE HOOK********* -
 storeSchema.pre('save', async function (next) {
     if (!this.isModified('name')) {
