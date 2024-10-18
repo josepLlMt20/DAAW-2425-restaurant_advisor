@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container
+    .mb-3.card
+      img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
+    .card-body
+      h5.fs-0 #{store.name}
+      p.mb-0= store.address
+    .no-gutters.row
+      .pr-lg-2.col-lg-12
+        .card
+          .card-body
+            p= store.description
+            if store.tags
+              each tag in store.tags
+                a.badge.bg-light.text-primary(href=`/tags/${tag}`) ##{tag}

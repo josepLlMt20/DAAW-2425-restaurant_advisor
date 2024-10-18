@@ -18,7 +18,7 @@ html
             ul.navbar-nav
               each item in h.menu
                 li.nav-item
-                  a.nav-link(href=`#`)
+                  a.nav-link(href=`${item.slug}`)
                     span #{item.title}
             .form-inline
               input.form-control.mr-sm-2(type="text" placeholder="Coffee, beer..." name="search")

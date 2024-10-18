@@ -45,8 +45,13 @@
 }
 
 @keyframes flashElement {
-  from {background-color: white;}
-  to {background-color: var(--flash-color);}
+  from {
+    background-color: white;
+  }
+
+  to {
+    background-color: var(--flash-color);
+  }
 }
 
 .closebtn {
@@ -62,4 +67,34 @@
 
 .closebtn:hover {
   color: black;
+}
+
+.stores {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.store {
+  background: white;
+  margin: 1.25em 0 0 1.25em;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 18vw;
+  object-fit: cover;
+}
+
+@media all and (max-width: 850px) {
+  .store {
+    width: calc(50% - 1.25em);
+  }
+}
+
+@media all and (max-width: 550px) {
+  .store {
+    width: 100%;
+  }
 }
