@@ -47,5 +47,14 @@ storeSchema.pre('save', async function (next) {
     }
     next(); //follow the PIPELINE -> do the SAVE
 });
+
+storeSchema.statics.getTagsList = function() { 
+    return this.aggregate([ 
+        { $unwind: '$tags' }, 
+        { $group: {_id: '$tags', count: { $sum: 1 } } }, 
+        { $sort: { count: -1 } } 
+    ]); 
+};
+
 //link “Store” with the storeSchema and make it importable
 module.exports = mongoose.model('Store', storeSchema);

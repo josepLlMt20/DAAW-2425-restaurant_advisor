@@ -39,4 +39,10 @@ router.post('/add/:id',
 //req.query -> /api/v1/search?q=hola
 router.get('/api/v1/search', catchErrors(storeController.searchStores));
 
+// SHOW all TAGs 
+router.get('/tags', catchErrors(storeController.getStoresByTag)); 
+ 
+//SHOW a certain TAG 
+router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));  
+
 module.exports = router;

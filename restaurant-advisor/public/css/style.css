@@ -110,3 +110,10 @@
 .search__result--active {
   background: #f1f1f1;
 }
+
+.list-group-item.active {
+  z-index: 2;
+  color: #007bff !important;
+  background-color: #edeff1 !important;
+  border-color: #38393a0c !important;
+}

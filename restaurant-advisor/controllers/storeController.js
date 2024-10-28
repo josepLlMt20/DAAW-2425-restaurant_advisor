@@ -104,3 +104,19 @@ exports.searchStores = async (req, res) => {
     }).limit(5); //second filter
     res.json({ stores, length: stores.length });
 };
+
+exports.getStoresByTag = async (req, res) => { 
+    const tag = req.params.tag; 
+    const tagQuery = tag || { $exists: true}; 
+   
+    //Promise1: AGGREGATE operation 
+    const tagsPromise = Store.getTagsList(); 
+   
+    //Promise2: find all the stores where the tag property  
+    //of a store includes the tag passed by (or any tag) 
+    const storesPromise = Store.find({ tags: tagQuery }); 
+   
+    const [tags, stores] = await Promise.all([tagsPromise, storesPromise]); 
+     
+    res.render('tags', { title: 'Tags', tags: tags, stores: stores, tag: tag}); 
+  };
