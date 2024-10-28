@@ -8,6 +8,8 @@ const MongoStore = require('connect-mongo');
 const helpers = require('./helpers');
 const flash = require('connect-flash');
 const errorHandlers = require('./handlers/errorHandlers');
+const passport = require('passport'); 
+require('./handlers/passport'); 
 // create our Express app
 const app = express();
 
@@ -33,12 +35,17 @@ app.use(session({
     })
 }));
 
+// Passport JS is what we use to handle our logins 
+app.use(passport.initialize()); 
+app.use(passport.session()); 
+
 app.use(flash());
 
 app.use((req, res, next) => {
     res.locals.h = helpers;
     res.locals.flashes = req.flash();
     res.locals.currentPath = req.path;
+    res.locals.user = req.user || null; //passport.js stores the user in req.user
     next();  //Go to the next middleware in the REQ-RES CYCLE
 });
 
@@ -54,6 +61,7 @@ if (app.get('env') === 'development') {
     /* Development Error Handler - Prints stack trace */
     app.use(errorHandlers.developmentErrors);
 }
+
 /* production error handler */
 app.use(errorHandlers.productionErrors);
 
