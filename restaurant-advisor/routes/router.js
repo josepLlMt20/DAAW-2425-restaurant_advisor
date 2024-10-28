@@ -5,23 +5,25 @@ const storeController = require('../controllers/storeController');
 const { catchErrors } = require('../handlers/errorHandlers');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController'); 
 
 router.get('/index/', storeController.homePage);
 
 router.get('/add/', storeController.addStore);
 
-router.post('/add/',
-    storeController.verify, //verify type image
-    storeController.upload, //resize and upload to file system
-    storeController.createStore //save in DB
+//1st step ADD STORE -> show the form 
+router.get('/add/',
+    authController.isLoggedIn,
+    storeController.addStore
 );
 
+//2nd step ADD STORE -> receive the data 
 router.post('/add/',
-    storeController.verify, //verify type image
-    catchErrors(storeController.upload), //resize and upload to filesystem
-    catchErrors(storeController.createStore) //save in DB
+    authController.isLoggedIn,
+    storeController.verify, //verify type image 
+    catchErrors(storeController.upload), //resize and upload to filesystem 
+    catchErrors(storeController.createStore) //save in DB 
 );
-
 // SHOW all STOREs
 router.get('/stores', catchErrors(storeController.getStores));
 
@@ -79,5 +81,13 @@ router.post('/account',
     authController.isLoggedIn,
     catchErrors(userController.updateAccount)
 );
+
+router.post('/reviews/:id',
+    authController.isLoggedIn,
+    catchErrors(reviewController.addReview)
+);
+
+//SHOW TOP STORES 
+router.get('/top', catchErrors(storeController.getTopStores)); 
 
 module.exports = router;

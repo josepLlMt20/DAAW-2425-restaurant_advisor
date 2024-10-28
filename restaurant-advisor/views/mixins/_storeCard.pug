@@ -6,4 +6,5 @@ mixin storeCard(store = {})
         h5.card-title
           a(href=`/store/${store.slug}` style="color:black") #{store.name}
         p.card-text= store.description.split(' ').slice(0, 15).join(' ')
-        a.mt-auto.btn.btn-primary(href=`/stores/${store._id}/edit`) Edit
+        if user && store.author.equals(user._id) 
+              a.mt-auto.btn.btn-primary(href=`/stores/${store._id}/edit`) Edit 

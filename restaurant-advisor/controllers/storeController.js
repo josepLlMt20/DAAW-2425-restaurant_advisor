@@ -1,3 +1,10 @@
+//*** Verify Credentials 
+const confirmOwner = (store, user) => {
+    if (!store.author.equals(user._id)) {
+        throw Error('You must own the store in order to edit it');
+    }
+};
+
 exports.homePage = (req, res) => {
     req.flash('error', `hola <strong>que</strong> tal`);
     req.flash('info', `hola`);
@@ -53,6 +60,8 @@ const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
 
 exports.createStore = async (req, res) => {
+    //add the id of authenticated user object as author in body 
+    req.body.author = req.user._id;
     const store = new Store(req.body);
     const savedStore = await store.save();
     console.log('Store saved!');
@@ -77,6 +86,7 @@ exports.getStores = async (req, res) => {
 
 exports.editStore = async (req, res) => {
     const store = await Store.findOne({ _id: req.params.id });
+    confirmOwner(store, req.user); //check if the user is the owner
     res.render('editStore', { title: `Edit ${store.name}`, store: store });
 };
 exports.updateStore = async (req, res) => {
@@ -105,18 +115,23 @@ exports.searchStores = async (req, res) => {
     res.json({ stores, length: stores.length });
 };
 
-exports.getStoresByTag = async (req, res) => { 
-    const tag = req.params.tag; 
-    const tagQuery = tag || { $exists: true}; 
-   
+exports.getStoresByTag = async (req, res) => {
+    const tag = req.params.tag;
+    const tagQuery = tag || { $exists: true };
+
     //Promise1: AGGREGATE operation 
-    const tagsPromise = Store.getTagsList(); 
-   
+    const tagsPromise = Store.getTagsList();
+
     //Promise2: find all the stores where the tag property  
     //of a store includes the tag passed by (or any tag) 
-    const storesPromise = Store.find({ tags: tagQuery }); 
-   
-    const [tags, stores] = await Promise.all([tagsPromise, storesPromise]); 
-    
-    res.render('tags', { title: 'Tags', tags: tags, stores: stores, tag: tag}); 
-  };
+    const storesPromise = Store.find({ tags: tagQuery });
+
+    const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+
+    res.render('tags', { title: 'Tags', tags: tags, stores: stores, tag: tag });
+};
+
+exports.getTopStores = async (req, res) => {
+    const stores = await Store.getTopStores();
+    res.render('topStores', { stores, title: 'Top Stores' });
+}; 
