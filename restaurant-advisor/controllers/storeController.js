@@ -134,4 +134,35 @@ exports.getStoresByTag = async (req, res) => {
 exports.getTopStores = async (req, res) => {
     const stores = await Store.getTopStores();
     res.render('topStores', { stores, title: 'Top Stores' });
-}; 
+};
+
+exports.getStores = async (req, res) => {
+    const page = req.params.page || 1;
+    const limit = 6; // items in each page 
+    const skip = (page * limit) - limit;
+
+    const storesPromise = Store
+        .find()  //look for ALL 
+        .skip(skip) //Skip items of former pages 
+        .limit(limit) //Take the desired number of items 
+        .sort({ created: 'desc' }); //sort them 
+
+    const countPromise = Store.countDocuments();
+
+    const [stores, count] = await Promise.all([storesPromise,
+        countPromise]);
+
+    const pages = Math.ceil(count / limit);
+    if (!stores.length && skip) {
+        req.flash('info', `You asked for page ${page}. But that does not 
+exist. So 
+          I put you on page ${pages}`);
+        res.redirect(`/stores/page/${pages}`);
+        return;
+    }
+
+    res.render('stores', {
+        title: 'Stores', stores: stores, page: page,
+        pages: pages, count: count
+    });
+};

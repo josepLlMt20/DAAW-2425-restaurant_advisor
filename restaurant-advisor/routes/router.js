@@ -90,4 +90,23 @@ router.post('/reviews/:id',
 //SHOW TOP STORES 
 router.get('/top', catchErrors(storeController.getTopStores)); 
 
+//RECEIVE FORGOT ACCOUNT ACTION 
+router.post('/account/forgot', catchErrors(authController.forgot)); 
+
+//1st step RESET PASSWD -> show the form 
+router.get('/account/reset/:token', catchErrors(authController.reset));
+
+//2nd step RESET PASSWD -> change passwd 
+router.post('/account/reset/:token',  
+    authController.validationCustomRules(), 
+    authController.validatePassUpdate, 
+    catchErrors(authController.updatePassword)
+); 
+
+// SHOW all STOREs 
+router.get('/stores', catchErrors(storeController.getStores)); 
+ 
+// SHOW all STOREs with PAGINATION 
+router.get('/stores/page/:page', catchErrors(storeController.getStores)); 
+
 module.exports = router;

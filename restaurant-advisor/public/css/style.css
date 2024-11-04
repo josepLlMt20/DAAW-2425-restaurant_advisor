@@ -154,3 +154,44 @@
 .rating:hover>input:checked~label:before {
   opacity: 0.4
 }
+
+.pagination {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  background: white;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: .25rem;
+}
+
+.pagination__next {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  padding: 1rem 3rem 1rem 1rem;
+}
+
+.pagination__next a:after {
+  margin-left: 1rem;
+  content: '\2192';
+}
+
+.pagination__prev {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  padding: 1rem 1rem 1rem 3rem;
+}
+
+.pagination__prev a:before {
+  margin-right: 1rem;
+  content: '\2190';
+}
+
+.pagination__text {
+  -ms-flex: 3 0 auto;
+  flex: 3 0 auto;
+  padding: 1rem;
+  text-align: center;
+}

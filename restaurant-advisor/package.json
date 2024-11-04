@@ -7,7 +7,9 @@
     "start": "node ./server.js",
     "watch": "nodemon ./server.js --ignore public/",
     "webpack": "webpack -w --mode production",
-    "dev": "concurrently \"npm run watch\" \"npm run webpack\""
+    "dev": "concurrently \"npm run watch\" \"npm run webpack\"",
+    "loadsample": "node ./data/load-sample-data.js", 
+    "deletesample": "node ./data/load-sample-data.js --delete"
   },
   "keywords": [],
   "author": "",
