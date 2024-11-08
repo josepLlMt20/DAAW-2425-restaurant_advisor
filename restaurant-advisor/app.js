@@ -15,7 +15,6 @@ const app = express();
 
 // serves up static files from the public folder. 
 app.use(express.static(path.join(__dirname, 'public')));
-
 // VIEWS: this is the folder where we keep our pug files
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug'); // we use the engine pug

@@ -1,3 +1,9 @@
+const uuid = require('uuid');
+const { Jimp } = require('jimp');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const Store = mongoose.model('Store');
+
 //*** Verify Credentials 
 const confirmOwner = (store, user) => {
     if (!store.author.equals(user._id)) {
@@ -18,8 +24,6 @@ exports.addStore = (req, res) => {
     res.render('editStore', { title: 'Add Store' });
 }
 
-const multer = require('multer');
-
 const multerOptions = {
     storage: multer.memoryStorage(),
     fileFilter: function (req, file, next) {
@@ -34,8 +38,6 @@ const multerOptions = {
 
 exports.verify = multer(multerOptions).single('photo');
 
-const uuid = require('uuid');
-const { Jimp } = require('jimp');
 
 //MIDLEWARE FUNCTION for CREATE STORE
 exports.upload = async (req, res, next) => {
@@ -56,8 +58,6 @@ exports.upload = async (req, res, next) => {
     next();
 };
 
-const mongoose = require('mongoose');
-const Store = mongoose.model('Store');
 
 exports.createStore = async (req, res) => {
     //add the id of authenticated user object as author in body 
@@ -69,14 +69,38 @@ exports.createStore = async (req, res) => {
     res.redirect(`/store/${savedStore.slug}`);
 };
 
-exports.getStoreBySlug = async (req, res, next) => {
-    const store = await Store.findOne({ slug: req.params.slug });
-    // If no store -> DB send a NULL -> do nothing and follow the pipeline
-    if (!store) {
-        next();
-        return;
+
+// Función de geocodificación
+async function geocodeAddress(address) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+            return {
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon)
+        };
+    } else {
+        throw new Error('No se encontraron coordenadas para la dirección proporcionada.');
     }
-    res.render('store', { title: `Store ${store.name}`, store: store });
+}
+
+// Método de controlador que obtiene los datos de la tienda y geocodifica la dirección
+exports.getStoreBySlug = async (req, res) => {
+    const fetch = (await import('node-fetch')).default;
+    const store = await Store.findOne({ slug: req.params.slug });
+    if (!store) {
+        return res.status(404).render('error', { message: 'Store not found' });
+    }
+
+    try {
+        const coordinates = await geocodeAddress(store.address);
+        res.render('store', { store, coordinates });
+    } catch (error) {
+        console.error(error);
+        res.render('store', { store, coordinates: null }); // Si falla, renderiza sin el mapa
+    }
 };
 
 exports.getStores = async (req, res) => {
@@ -154,9 +178,7 @@ exports.getStores = async (req, res) => {
 
     const pages = Math.ceil(count / limit);
     if (!stores.length && skip) {
-        req.flash('info', `You asked for page ${page}. But that does not 
-exist. So 
-          I put you on page ${pages}`);
+        req.flash('info', `You asked for page ${page}. But that does not exist. So I put you on page ${pages}`);
         res.redirect(`/stores/page/${pages}`);
         return;
     }

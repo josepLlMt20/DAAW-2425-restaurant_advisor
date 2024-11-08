@@ -3,34 +3,65 @@ extends layout
 include mixins/_reviewForm
 include mixins/_review
 
-
 block content
-    .container
-        .mb-3.card
-            img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
-        .card-body
-            h5.fs-0 #{store.name}
-            p.mb-0= store.address
-        .no-gutters.row
-            .pr-lg-2.col-lg-12
-                .card
-                    .card-body
-                        p= store.description
-                        if store.tags
-                            each tag in store.tags
-                                a.badge.bg-light.text-primary(href=`/tags/${tag}`) #{tag}
+  .container
+    .mb-3.card
+        img.card-img-top(src=`/uploads/${store.photo || 'store.png'}`)
+    .card-body
+        h5.fs-0 #{store.name}
+        p.mb-0= store.address
+    .no-gutters.row
+        .pr-lg-2.col-lg-12
+            .card
+                .card-body
+                    p= store.description
+                    if store.tags
+                        each tag in store.tags
+                            a.badge.bg-light.text-primary(href=`/tags/${tag}`) #{tag}
 
-        if user
+    if coordinates
+        .no-gutters.row.pt-3.col-lg-12
+            .card
+                .card-body
+                    h5 Mapa de ubicación
+                    #map(style="height: 400px;") // Establece el tamaño del mapa
+
+    if user
+        .no-gutters.row 
+            .pt-3.col-lg-12 
+                .card 
+                    .card-body 
+                        +reviewForm(store)
+
+    if store.reviews
+        each r in store.reviews 
             .no-gutters.row 
                 .pt-3.col-lg-12 
                     .card 
                         .card-body 
-                            +reviewForm(store)
+                            +review(r)
 
-        if store.reviews
-            each r in store.reviews 
-                .no-gutters.row 
-                    .pt-3.col-lg-12 
-                        .card 
-                            .card-body 
-                                +review(r)
+block scripts
+  script(src="/dist/leaflet.js")
+
+  if coordinates
+      script.
+        var customIcon = L.icon({
+            iconUrl: '/dist/images/marker-icon.png',  // La ruta al icono
+            iconSize: [30, 30], // Tamaño del icono
+            iconAnchor: [12, 41], // Ancla del icono
+            popupAnchor: [3, -35], // Ancla del popup
+            shadowSize: [41, 41] // Tamaño de la sombra
+        });
+          document.addEventListener('DOMContentLoaded', function () {
+              const map = L.map('map').setView([#{coordinates.lat}, #{coordinates.lng}], 15);
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  maxZoom: 18,
+                  attribution: '© OpenStreetMap contributors'
+              }).addTo(map);
+
+              L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
+                  .addTo(map)
+                  .bindPopup('<strong>#{store.name}</strong><br>#{store.address}')
+                  .openPopup();
+          });
