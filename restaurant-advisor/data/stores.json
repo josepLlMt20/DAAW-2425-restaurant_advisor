@@ -7,6 +7,8 @@
         "address": "Hamilton, ON, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"1.jpg",
+        "averageRating":3.7,
+        "totalReviews":0,
         "tags":["Wifi","Open Late","Vegan"],
         "created":"2017-03-08T17:04:19.860Z"
     },
@@ -18,6 +20,8 @@
         "address": "King William Street, Hamilton, ON, Canada",
         "author":"58c03ada8060197ca0b52d52",
         "photo":"2.jpg",
+        "averageRating":3.5,
+        "totalReviews":0,
         "tags":["Vegan"],
         "created":"2017-03-08T17:05:50.134Z"
     },
@@ -29,6 +33,8 @@
         "address": "The French, King William Street, Hamilton, ON, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"3.jpg",
+        "averageRating":4.0,
+        "totalReviews":0,
         "tags":["Open Late"],
         "created":"2017-03-08T17:07:14.681Z"
     },
@@ -40,6 +46,8 @@
         "address": "27 King William Street, Hamilton, ON, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"4.jpg",
+        "averageRating":0.0,
+        "totalReviews":0,
         "tags":["Wifi","Open Late","Family Friendly"],
         "created":"2017-03-08T17:08:37.131Z"
     },
@@ -51,6 +59,8 @@
         "address": "31 King William St, Hamilton, ON, Canada",
         "author":"58c03ada8060197ca0b52d52",
         "photo":"8.jpg",
+        "averageRating":0.0,
+        "totalReviews":0,
         "tags":["Wifi","Vegan"],
         "created":"2017-03-08T19:12:03.957Z"
     },
@@ -62,6 +72,8 @@
         "address":"150 James St S, Hamilton, ON L8P 3A2, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"6.jpg",
+        "averageRating":0.0,
+        "totalReviews":0,
         "tags":["Open Late"],
         "created":"2017-03-08T19:26:39.863Z"
     },
@@ -73,6 +85,8 @@
         "address":"163 John St S, Hamilton, ON L8N 2C3, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"7.jpg",
+        "averageRating":0.0,
+        "totalReviews":0,
         "tags":["Wifi","Open Late"],
         "created":"2017-03-08T19:28:21.738Z"
     },
@@ -84,6 +98,8 @@
         "address":"The Kitchen Collective, King Street East, Hamilton, ON, Canada",
         "author":"58c039018060197ca0b52d4c",
         "photo":"5.jpg",
+        "averageRating":0.0,
+        "totalReviews":0,
         "tags":["Vegan"],
         "created":"2017-03-08T19:30:21.147Z"
     }

@@ -7,7 +7,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const reviewController = require('../controllers/reviewController'); 
 
-router.get('/index/', storeController.homePage);
+router.get('/', storeController.getStores);
 
 router.get('/add/', storeController.addStore);
 
@@ -26,6 +26,8 @@ router.post('/add/',
 );
 // SHOW all STOREs
 router.get('/stores', catchErrors(storeController.getStores));
+
+router.get('/stores/map', catchErrors(storeController.getStoresMap));
 
 // SHOW a certain STORE
 router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
@@ -85,6 +87,11 @@ router.post('/account',
 router.post('/reviews/:id',
     authController.isLoggedIn,
     catchErrors(reviewController.addReview)
+);
+
+router.get('/stores/delete/:id',
+    authController.isLoggedIn,
+    catchErrors(storeController.deleteStore)
 );
 
 //SHOW TOP STORES 

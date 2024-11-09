@@ -23,8 +23,8 @@ block content
         .no-gutters.row.pt-3.col-lg-12
             .card
                 .card-body
-                    h5 Mapa de ubicación
-                    #map(style="height: 400px;") // Establece el tamaño del mapa
+                    h5 Location
+                    #map(style="height: 400px;")
 
     if user
         .no-gutters.row 
@@ -62,6 +62,6 @@ block scripts
 
               L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
                   .addTo(map)
-                  .bindPopup('<strong>#{store.name}</strong><br>#{store.address}')
+                  .bindPopup('<strong>#{store.name}</strong><br>#{store.averageRating}')
                   .openPopup();
           });

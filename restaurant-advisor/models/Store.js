@@ -26,7 +26,15 @@ const storeSchema = new mongoose.Schema({
         ref: 'User', // tell MongoDB the relation with model "User" 
         required: 'You must supply an author'
     },
-    photo: String
+    photo: String,
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+    totalReviews: {
+        type: Number,
+        default: 0
+    }
 });
 
 storeSchema.statics.getTopStores = function () {
@@ -42,11 +50,6 @@ storeSchema.statics.getTopStores = function () {
         {
             $match: {
                 'reviews.1': { $exists: true }
-            }
-        },
-        {
-            $addFields: {
-                averageRating: { $avg: '$reviews.rating' }
             }
         },
         {

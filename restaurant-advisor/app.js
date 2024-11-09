@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // VIEWS: this is the folder where we keep our pug files
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug'); // we use the engine pug
-
+app.use('/modules', express.static(path.join(__dirname, 'node_modules')));
 //Express body-parser implementation -> creates the "req.body" object
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

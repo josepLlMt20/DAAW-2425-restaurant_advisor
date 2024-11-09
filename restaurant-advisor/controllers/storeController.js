@@ -6,18 +6,9 @@ const Store = mongoose.model('Store');
 
 //*** Verify Credentials 
 const confirmOwner = (store, user) => {
-    if (!store.author.equals(user._id)) {
+    if (!store.author.equals(user._id) && !user.is_admin) {
         throw Error('You must own the store in order to edit it');
     }
-};
-
-exports.homePage = (req, res) => {
-    req.flash('error', `hola <strong>que</strong> tal`);
-    req.flash('info', `hola`);
-    req.flash('warning', `hola`);
-    req.flash('success', `hola`);
-
-    res.render('extendingLayout');
 };
 
 exports.addStore = (req, res) => {
@@ -108,11 +99,37 @@ exports.getStores = async (req, res) => {
     res.render('stores', { title: 'Stores', stores: stores });
 };
 
+exports.getStoresMap = async (req, res) => {
+    const fetch = (await import('node-fetch')).default;
+    const stores = await Store.find();
+    if (!stores || stores.length === 0) {
+        return res.status(404).render('error', { message: 'Stores not found' });
+    }
+
+    const storesData = {};
+    
+    for (const store of stores) {
+        try {
+            const coordinates = await geocodeAddress(store.address);
+            storesData[store.name] = [store.averageRating, coordinates];
+        } catch (error) {
+            console.error(`Error geocoding address for store ${store.name}:`, error);
+            storesData[store.name] = [
+                store.averageRating || 0,
+                null // Si falla la geocodificación, dejar coordenadas como null
+            ];
+        }
+    }
+
+    res.render('storesMap', { storesData });
+};
+
 exports.editStore = async (req, res) => {
     const store = await Store.findOne({ _id: req.params.id });
     confirmOwner(store, req.user); //check if the user is the owner
     res.render('editStore', { title: `Edit ${store.name}`, store: store });
 };
+
 exports.updateStore = async (req, res) => {
     // find and update the store
     const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.
@@ -124,6 +141,18 @@ exports.updateStore = async (req, res) => {
    g>.
     <a href="/store/${store.slug}">View store</a> `);
     res.redirect(`/stores/${store._id}/edit`);
+};
+
+exports.deleteStore = async (req, res) => {
+    const store = await Store.findByIdAndDelete(req.params.id);
+
+    if (!store) {
+        req.flash('error', 'Store not found');
+        return res.redirect('back');
+    }
+
+    req.flash('success', `Store "${store.name}" has been deleted`);
+    res.redirect('/stores');
 };
 
 exports.searchStores = async (req, res) => {
@@ -162,7 +191,7 @@ exports.getTopStores = async (req, res) => {
 
 exports.getStores = async (req, res) => {
     const page = req.params.page || 1;
-    const limit = 6; // items in each page 
+    const limit = 8; // items in each page 
     const skip = (page * limit) - limit;
 
     const storesPromise = Store

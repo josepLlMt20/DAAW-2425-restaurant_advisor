@@ -76,6 +76,24 @@
   flex-wrap: wrap;
 }
 
+.row-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.row-buttons {
+  margin-top: auto; /* Empuja los botones hacia abajo */
+  display: flex;
+  width: 100%; /* Ocupa todo el ancho de la card */
+}
+
+.row-buttons a {
+  flex-grow: 1; /* Hace que los botones ocupen el mismo espacio */
+  text-align: center; /* Centra el texto en los botones */
+  margin: 0 2px; /* Espaciado entre los botones */
+}
+
 .store {
   background: white;
   margin: 1.25em 0 0 1.25em;

@@ -5,7 +5,11 @@ include mixins/_pagination
 
 block content
     .container
-        h2= title
+        .row-container
+            h2= title
+            a.btn.btn-primary(href='/stores/map')
+                i.fa.fa-map(style="padding-right:5px")
+                | View Map
         .stores
             each store in stores
                 +storeCard(store)
