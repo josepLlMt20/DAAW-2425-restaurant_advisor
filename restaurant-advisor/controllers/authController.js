@@ -109,27 +109,31 @@ exports.validatePassUpdate = (req, res, next) => {
     next(); //if no errors -> go to next MIDDLEWARE 
 };
 
-// Custom Rules for express-validator 
-exports.validationCustomRules = () => { 
-    return body('password-confirm').custom((value, { req }) => { 
-        if (value !== req.body.password) { 
-            throw new Error('Password confirmation does not match'); 
-        } 
-        return true; 
+exports.updatePassword = async (req, res) => { 
+    const user = await User.findOne({ 
+        resetPasswordToken: req.params.token, 
+        resetPasswordExpires: { $gt: Date.now() }  
     }); 
-} 
  
-//MIDDLEWARE function for updatePassword 
-exports.validatePassUpdate = (req, res, next) => { 
-    const errors = validationResult(req); 
- 
-    if (!errors.isEmpty()) { 
-        //Iterate errors and generate a flash for each one 
-        req.flash('error', errors.array().map(err => err.msg)); 
- 
-        res.redirect('back'); 
+    if(!user) {          
+  req.flash('error', 'Password reset is invalid or has expired'); 
+        res.redirect('/login'); 
         return; 
     } 
  
-    next(); //if no errors -> go to next MIDDLEWARE 
+    await user.setPassword(req.body.password); 
+ 
+    user.resetPasswordToken = undefined; 
+    user.resetPasswordExpires = undefined; 
+    const updatedUser = await user.save(); 
+ 
+    await new Promise(function(res, rej) { 
+        req.login(updatedUser, function(err, data) { 
+          if (err) rej(err); 
+          else res(data); 
+        }); 
+    }); 
+ 
+    req.flash('success', 'Your password has been reset. You are now logged in'); 
+    res.redirect('/stores'); 
 };

@@ -34,7 +34,16 @@ const storeSchema = new mongoose.Schema({
     totalReviews: {
         type: Number,
         default: 0
-    }
+    },
+    closedDays: [String],
+    timeSlots:[
+        {
+            date: Date,
+            startTime: String,
+            endTime: String,
+            maxReservations: Number
+        }
+    ]
 });
 
 storeSchema.statics.getTopStores = function () {
