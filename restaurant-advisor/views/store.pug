@@ -2,6 +2,7 @@ extends layout
 
 include mixins/_reviewForm
 include mixins/_review
+include mixins/_reservationForm
 
 block content
   .container
@@ -25,6 +26,34 @@ block content
                 .card-body
                     h5 Location
                     #map(style="height: 400px;")
+
+    // Mostrar Time Slots
+    if store.timeSlots && store.timeSlots.length > 0
+        .no-gutters.row.pt-3.col-lg-12
+            .card
+                .card-body
+                    h5 Time Slots
+                    table.table
+                        thead
+                            tr
+                                th Day
+                                th Opening time
+                                th Closing time
+                                th Max. reservations
+                        tbody
+                            each slot in store.timeSlots
+                                tr
+                                    td= slot.date
+                                    td= slot.startTime
+                                    td= slot.endTime
+                                    td= slot.maxReservations
+
+    if user
+        .no-gutters.row 
+            .pt-3.col-lg-12 
+                .card 
+                    .card-body 
+                        +reservationForm(store)
 
     if user
         .no-gutters.row 

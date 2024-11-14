@@ -1,0 +1,70 @@
+mixin reservationForm(store)
+  form(action=`/store/${store._id}/reservation` method="POST")
+    .mb-3
+      label(for="date" class="form-label") Select a date
+      input.form-control(type="date" id="date" name="date" required 
+        data-timeslots=JSON.stringify(store.timeSlots || []) 
+        data-closedDays=JSON.stringify(store.closedDays || [])
+      )
+
+    .mb-3
+      label(for="timeSlot" class="form-label") Select a time slot
+      select.form-control(id="timeSlot" name="timeSlot" required disabled)
+        option(value="" disabled selected) Choose a time slot
+
+    button.btn.btn-primary(type="submit") Reserve
+
+  script.
+    const form = document.querySelector('form');
+    const timeSlots = JSON.parse(form.querySelector('input[name="date"]').getAttribute('data-timeslots'));
+    const closedDays = JSON.parse(form.querySelector('input[name="date"]').getAttribute('data-closedDays'));
+    const timeSlotSelect = document.getElementById('timeSlot');
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const availableSlots =[];
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('timeSlots:', timeSlots);
+      console.log('closedDays:', closedDays);
+
+      //bucle per recorrer timeSlots i mostrar-los
+        timeSlots.forEach(function(slot) {
+            console.log(slot.date, slot.startTime, slot.endTime, slot.maxReservations);
+        });
+    });
+
+    document.getElementById('date').addEventListener('change', function() {
+        const selectedDate = this.value; 
+        timeSlotSelect.innerHTML = '<option value="" disabled selected>Choose a time slot</option>';
+
+        const selectedDateObj = new Date(selectedDate);
+        const selectedDay = days[selectedDateObj.getDay()];
+
+        console.log("Fecha seleccionada:", selectedDate);
+        console.log("Día de la semana seleccionado:", selectedDay);
+
+        if (selectedDate && !closedDays.includes(selectedDay)) {
+          timeSlots.forEach(function(slot) {
+            console.log("Slot:", slot.date);
+            console.log("Selected date:", selectedDay);
+            if (slot.date === selectedDay) {
+              availableSlots.push(slot);
+            }
+          });  
+          
+          console.log("Time slots disponibles:", availableSlots);
+
+          if (availableSlots.length > 0) {
+            timeSlotSelect.disabled = false;
+            availableSlots.forEach(function(slot) {
+              const option = document.createElement('option');
+              option.value = `${slot.startTime}-${slot.endTime}`;
+              option.textContent = `${slot.startTime} - ${slot.endTime}`;
+              timeSlotSelect.appendChild(option);
+            });
+          } else {
+            timeSlotSelect.disabled = true;
+          }
+        } else {
+          timeSlotSelect.disabled = true;
+        }
+      });

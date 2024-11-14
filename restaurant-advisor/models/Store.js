@@ -38,7 +38,7 @@ const storeSchema = new mongoose.Schema({
     closedDays: [String],
     timeSlots:[
         {
-            date: Date,
+            date: String,
             startTime: String,
             endTime: String,
             maxReservations: Number

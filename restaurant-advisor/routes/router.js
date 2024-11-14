@@ -6,6 +6,7 @@ const { catchErrors } = require('../handlers/errorHandlers');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const reviewController = require('../controllers/reviewController'); 
+const reservationController = require('../controllers/reservationController');
 
 router.get('/', storeController.getStores);
 
@@ -115,5 +116,14 @@ router.get('/stores', catchErrors(storeController.getStores));
  
 // SHOW all STOREs with PAGINATION 
 router.get('/stores/page/:page', catchErrors(storeController.getStores)); 
+
+// SHOW all RESERVATIONS
+router.get('/reservations', authController.isLoggedIn, catchErrors(reservationController.getUserReservations));
+
+//ADD RESERVATION
+router.post('/store/:id/reservation', authController.isLoggedIn, catchErrors(reservationController.addReservation));
+
+//CANCEL RESERVATION
+router.get('/reservation/:id/cancel', authController.isLoggedIn, catchErrors(reservationController.cancelReservation));
 
 module.exports = router;

@@ -1,4 +1,4 @@
-mixin storeForm(store = {}) 
+mixin storeForm(store = {})
   form(action=`/add/${store._id || ''}` method="POST" enctype="multipart/form-data")
     .mb-3
       label(for="name" class="form-label") Name
@@ -14,6 +14,7 @@ mixin storeForm(store = {})
     .mb-3
       label(for="address" class="form-label") Address
       input.form-control(type="text" id="address" name="address" value=store.address required)
+
     .mb-3
       label(for="tags" class="form-label") Options:
     .mb-3.form-check
@@ -23,4 +24,71 @@ mixin storeForm(store = {})
         .form-check-label
           input.form-check-input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
           label(for=choice class="form-check-label") #{choice}
+
+    .mb-3
+      label(for="closedDays" class="form-label") Closed Days:
+      - const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+      - const closedDays = store.closedDays || []
+      each day in daysOfWeek
+        .form-check
+          input.form-check-input(type="checkbox" name="closedDays" value=day checked=(closedDays.includes(day)) id=day)
+          label.form-check-label(for=day) #{day}
+
+    // Campos para Time Slots con un desplegable de días de la semana
+    .mb-3
+      label(class="form-label") Opening schedule:
+      .time-slots-container
+        - const timeSlots = store.timeSlots || []
+        each timeSlot, index in timeSlots
+          .time-slot.mb-3
+            label(for=`timeSlots[${index}][date]` class="form-label") Select a day
+            select.form-control(name=`timeSlots[${index}][date]` required)
+              option(value="" disabled selected) Choose a day
+              - const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+              - const closedDays = store.closedDays || []
+              each day in daysOfWeek
+                - if (!closedDays.includes(day))
+                  option(value=day selected=(timeSlot.date === day)) #{day}
+            label(for=`timeSlots[${index}][startTime]` class="form-label mt-2") Start time
+            input.form-control(type="time" name=`timeSlots[${index}][startTime]` value=timeSlot.startTime required)
+            label(for=`timeSlots[${index}][endTime]` class="form-label mt-2") End time
+            input.form-control(type="time" name=`timeSlots[${index}][endTime]` value=timeSlot.endTime required)
+            label(for=`timeSlots[${index}][maxReservations]` class="form-label mt-2") Max. reservations
+            input.form-control(type="number" name=`timeSlots[${index}][maxReservations]` value=timeSlot.maxReservations min="1" required)
+
+      button.btn.btn-secondary(type="button" id="addTimeSlotBtn") Add new time slot
+
     button.btn.btn-primary(type="submit") Save
+
+  script.
+    // Pasamos el valor de `store.closedDays` a JavaScript
+    const closedDays = #{JSON.stringify(store.closedDays || [])};
+
+    document.getElementById('addTimeSlotBtn').addEventListener('click', function() {
+      const container = document.querySelector('.time-slots-container');
+      const index = container.children.length;
+
+      // Filtrar los días cerrados para no aparecer en la lista de opciones
+      const availableDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        .filter(day => !closedDays.includes(day));
+
+      const newTimeSlotHTML = `
+        <div class="time-slot mb-3">
+          <label for="timeSlots[${index}][date]" class="form-label">Select a day</label>
+          <select name="timeSlots[${index}][date]" class="form-control" required>
+            <option value="" disabled selected>Choose a day</option>
+            ${availableDays.map(day => `<option value="${day}">${day}</option>`).join('')}
+          </select>
+          
+          <label for="timeSlots[${index}][startTime]" class="form-label mt-2">Start time</label>
+          <input type="time" class="form-control" name="timeSlots[${index}][startTime]" required>
+          
+          <label for="timeSlots[${index}][endTime]" class="form-label mt-2">End time</label>
+          <input type="time" class="form-control" name="timeSlots[${index}][endTime]" required>
+          
+          <label for="timeSlots[${index}][maxReservations]" class="form-label mt-2">Max. reservations</label>
+          <input type="number" class="form-control" name="timeSlots[${index}][maxReservations]" min="1" required>
+        </div>`;
+      
+      container.insertAdjacentHTML('beforeend', newTimeSlotHTML);
+    });
