@@ -14,16 +14,32 @@
         "closedDays": ["Sunday"],
         "timeSlots": [
             {
-                "date": "Friday",
+                "dayOfWeek": "Friday",
                 "startTime": "12:00",
                 "endTime": "14:00",
-                "maxReservations": 10
+                "maxReservations": 10,
+                "reservations": [
+                    {
+                        "date": "2024-11-15T00:00:00.000Z",
+                        "currentReservations": 5
+                    },
+                    {
+                        "date": "2024-11-22T00:00:00.000Z",
+                        "currentReservations": 3
+                    }
+                ]
             },
             {
-                "date": "Friday",
+                "dayOfWeek": "Friday",
                 "startTime": "18:00",
                 "endTime": "20:00",
-                "maxReservations": 10
+                "maxReservations": 10,
+                "reservations": [
+                    {
+                        "date": "2024-11-15T00:00:00.000Z",
+                        "currentReservations": 7
+                    }
+                ]
             }
         ]
     },
@@ -42,16 +58,23 @@
         "closedDays": ["Monday"],
         "timeSlots": [
             {
-                "date": "Saturday",
+                "dayOfWeek": "Saturday",
                 "startTime": "10:00",
                 "endTime": "12:00",
-                "maxReservations": 8
+                "maxReservations": 8,
+                "reservations": []
             },
             {
-                "date": "Saturday",
+                "dayOfWeek": "Saturday",
                 "startTime": "14:00",
                 "endTime": "16:00",
-                "maxReservations": 5
+                "maxReservations": 5,
+                "reservations": [
+                    {
+                        "date": "2024-11-16T00:00:00.000Z",
+                        "currentReservations": 4
+                    }
+                ]
             }
         ]
     },
@@ -70,16 +93,23 @@
         "closedDays": ["Wednesday"],
         "timeSlots": [
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "12:00",
                 "endTime": "14:00",
-                "maxReservations": 12
+                "maxReservations": 12,
+                "reservations": []
             },
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "18:00",
                 "endTime": "20:00",
-                "maxReservations": 8
+                "maxReservations": 8,
+                "reservations": [
+                    {
+                        "date": "2024-11-17T00:00:00.000Z",
+                        "currentReservations": 6
+                    }
+                ]
             }
         ]
     },
@@ -98,16 +128,23 @@
         "closedDays": ["Tuesday", "Saturday"],
         "timeSlots": [
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "12:00",
                 "endTime": "14:00",
-                "maxReservations": 6
+                "maxReservations": 6,
+                "reservations": [
+                    {
+                        "date": "2024-11-17T00:00:00.000Z",
+                        "currentReservations": 4
+                    }
+                ]
             },
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "17:00",
                 "endTime": "19:00",
-                "maxReservations": 6
+                "maxReservations": 6,
+                "reservations": []
             }
         ]
     },
@@ -126,16 +163,23 @@
         "closedDays": ["Sunday"],
         "timeSlots": [
             {
-                "date": "Monday",
+                "dayOfWeek": "Monday",
                 "startTime": "11:00",
                 "endTime": "13:00",
-                "maxReservations": 10
+                "maxReservations": 10,
+                "reservations": [
+                    {
+                        "date": "2024-11-18T00:00:00.000Z",
+                        "currentReservations": 6
+                    }
+                ]
             },
             {
-                "date": "Monday",
+                "dayOfWeek": "Monday",
                 "startTime": "15:00",
                 "endTime": "17:00",
-                "maxReservations": 8
+                "maxReservations": 8,
+                "reservations": []
             }
         ]
     },
@@ -154,16 +198,23 @@
         "closedDays": ["Saturday"],
         "timeSlots": [
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "12:00",
                 "endTime": "14:00",
-                "maxReservations": 15
+                "maxReservations": 15,
+                "reservations": []
             },
             {
-                "date": "Sunday",
+                "dayOfWeek": "Sunday",
                 "startTime": "19:00",
                 "endTime": "21:00",
-                "maxReservations": 12
+                "maxReservations": 12,
+                "reservations": [
+                    {
+                        "date": "2024-11-17T00:00:00.000Z",
+                        "currentReservations": 10
+                    }
+                ]
             }
         ]
     },
@@ -182,16 +233,23 @@
         "closedDays": ["Monday"],
         "timeSlots": [
             {
-                "date": "Tuesday",
+                "dayOfWeek": "Tuesday",
                 "startTime": "13:00",
                 "endTime": "15:00",
-                "maxReservations": 5
+                "maxReservations": 5,
+                "reservations": []
             },
             {
-                "date": "Tuesday",
+                "dayOfWeek": "Tuesday",
                 "startTime": "18:00",
                 "endTime": "20:00",
-                "maxReservations": 5
+                "maxReservations": 5,
+                "reservations": [
+                    {
+                        "date": "2024-11-19T00:00:00.000Z",
+                        "currentReservations": 2
+                    }
+                ]
             }
         ]
     },
@@ -210,17 +268,24 @@
         "closedDays": ["Tuesday", "Thursday"],
         "timeSlots": [
             {
-                "date": "Friday",
+                "dayOfWeek": "Friday",
                 "startTime": "10:00",
                 "endTime": "12:00",
-                "maxReservations": 7
+                "maxReservations": 7,
+                "reservations": [
+                    {
+                        "date": "2024-11-22T00:00:00.000Z",
+                        "currentReservations": 5
+                    }
+                ]
             },
             {
-                "date": "Friday",
+                "dayOfWeek": "Friday",
                 "startTime": "14:00",
                 "endTime": "16:00",
-                "maxReservations": 7
+                "maxReservations": 7,
+                "reservations": []
             }
         ]
-    }
+    }   
 ]

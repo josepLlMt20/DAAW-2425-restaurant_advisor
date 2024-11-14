@@ -36,12 +36,18 @@ const storeSchema = new mongoose.Schema({
         default: 0
     },
     closedDays: [String],
-    timeSlots:[
+    timeSlots: [
         {
-            date: String,
+            dayOfWeek: String, // "Monday", "Tuesday", etc.
             startTime: String,
             endTime: String,
-            maxReservations: Number
+            maxReservations: Number,
+            reservations: [
+                {
+                    date: Date, // fecha específica
+                    currentReservations: { type: Number, default: 0 }
+                }
+            ]
         }
     ]
 });

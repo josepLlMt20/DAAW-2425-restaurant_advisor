@@ -77,7 +77,7 @@ async function geocodeAddress(address) {
     }
 }
 
-// Método de controlador que obtiene los datos de la tienda y geocodifica la dirección
+// Método de controlador que obtiene los datos de la tienda, geocodifica la dirección y agrupa los timeSlots
 exports.getStoreBySlug = async (req, res) => {
     const fetch = (await import('node-fetch')).default;
     const store = await Store.findOne({ slug: req.params.slug });
@@ -85,12 +85,24 @@ exports.getStoreBySlug = async (req, res) => {
         return res.status(404).render('error', { message: 'Store not found' });
     }
 
+    // Agrupar los timeSlots por día de la semana
+    const groupedTimeSlots = store.timeSlots.reduce((acc, slot) => {
+        if (!acc[slot.dayOfWeek]) {
+            acc[slot.dayOfWeek] = [];
+        }
+        acc[slot.dayOfWeek].push(slot);
+        return acc;
+    }, {});
+
     try {
+        // Intentar geocodificar la dirección de la tienda
         const coordinates = await geocodeAddress(store.address);
-        res.render('store', { store, coordinates });
+        // Renderizar la vista pasando los timeSlots agrupados y las coordenadas
+        res.render('store', { store, coordinates, groupedTimeSlots });
     } catch (error) {
         console.error(error);
-        res.render('store', { store, coordinates: null }); // Si falla, renderiza sin el mapa
+        // Si la geocodificación falla, renderiza la vista sin las coordenadas
+        res.render('store', { store, coordinates: null, groupedTimeSlots });
     }
 };
 

@@ -27,26 +27,28 @@ block content
                     h5 Location
                     #map(style="height: 400px;")
 
-    // Mostrar Time Slots
-    if store.timeSlots && store.timeSlots.length > 0
+    // Mostrar Time Slots agrupados por día
+    // Mostrar Time Slots agrupados por día
+    if groupedTimeSlots && Object.keys(groupedTimeSlots).length > 0
         .no-gutters.row.pt-3.col-lg-12
             .card
                 .card-body
                     h5 Time Slots
-                    table.table
-                        thead
-                            tr
-                                th Day
-                                th Opening time
-                                th Closing time
-                                th Max. reservations
-                        tbody
-                            each slot in store.timeSlots
+                    each slots, day in groupedTimeSlots
+                        h6.mt-3= day
+                        table.table
+                            thead
                                 tr
-                                    td= slot.date
-                                    td= slot.startTime
-                                    td= slot.endTime
-                                    td= slot.maxReservations
+                                    th Opening time
+                                    th Closing time
+                                    th Max. reservations
+                            tbody
+                                each slot in slots
+                                    tr
+                                        td= slot.startTime
+                                        td= slot.endTime
+                                        td= slot.maxReservations
+
 
     if user
         .no-gutters.row 
@@ -76,21 +78,21 @@ block scripts
   if coordinates
       script.
         var customIcon = L.icon({
-            iconUrl: '/dist/images/marker-icon.png',  // La ruta al icono
-            iconSize: [30, 30], // Tamaño del icono
-            iconAnchor: [12, 41], // Ancla del icono
-            popupAnchor: [3, -35], // Ancla del popup
-            shadowSize: [41, 41] // Tamaño de la sombra
+            iconUrl: '/dist/images/marker-icon.png',
+            iconSize: [30, 30],
+            iconAnchor: [12, 41],
+            popupAnchor: [3, -35],
+            shadowSize: [41, 41]
         });
-          document.addEventListener('DOMContentLoaded', function () {
-              const map = L.map('map').setView([#{coordinates.lat}, #{coordinates.lng}], 15);
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                  maxZoom: 18,
-                  attribution: '© OpenStreetMap contributors'
-              }).addTo(map);
+        document.addEventListener('DOMContentLoaded', function () {
+            const map = L.map('map').setView([#{coordinates.lat}, #{coordinates.lng}], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
-              L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
-                  .addTo(map)
-                  .bindPopup('<strong>#{store.name}</strong><br>#{store.averageRating}')
-                  .openPopup();
-          });
+            L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
+                .addTo(map)
+                .bindPopup('<strong>#{store.name}</strong><br>#{store.averageRating}')
+                .openPopup();
+        });

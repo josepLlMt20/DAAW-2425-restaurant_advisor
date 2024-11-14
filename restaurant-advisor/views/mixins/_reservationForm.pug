@@ -20,16 +20,11 @@ mixin reservationForm(store)
     const closedDays = JSON.parse(form.querySelector('input[name="date"]').getAttribute('data-closedDays'));
     const timeSlotSelect = document.getElementById('timeSlot');
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const availableSlots =[];
+    const availableSlots = [];
     
     document.addEventListener('DOMContentLoaded', function() {
       console.log('timeSlots:', timeSlots);
       console.log('closedDays:', closedDays);
-
-      //bucle per recorrer timeSlots i mostrar-los
-        timeSlots.forEach(function(slot) {
-            console.log(slot.date, slot.startTime, slot.endTime, slot.maxReservations);
-        });
     });
 
     document.getElementById('date').addEventListener('change', function() {
@@ -43,24 +38,45 @@ mixin reservationForm(store)
         console.log("Día de la semana seleccionado:", selectedDay);
 
         if (selectedDate && !closedDays.includes(selectedDay)) {
+          availableSlots.length = 0; // Limpiar los slots disponibles para la nueva fecha
+          
+          // Bucle para filtrar los slots disponibles según el día seleccionado
           timeSlots.forEach(function(slot) {
-            console.log("Slot:", slot.date);
-            console.log("Selected date:", selectedDay);
-            if (slot.date === selectedDay) {
+            console.log("Slot:", slot.dayOfWeek);
+            if (slot.dayOfWeek === selectedDay) {
               availableSlots.push(slot);
             }
           });  
-          
+
           console.log("Time slots disponibles:", availableSlots);
 
           if (availableSlots.length > 0) {
-            timeSlotSelect.disabled = false;
-            availableSlots.forEach(function(slot) {
-              const option = document.createElement('option');
-              option.value = `${slot.startTime}-${slot.endTime}`;
-              option.textContent = `${slot.startTime} - ${slot.endTime}`;
-              timeSlotSelect.appendChild(option);
-            });
+              timeSlotSelect.disabled = false;
+
+              availableSlots.forEach(function(slot) {
+                  // Convertir `selectedDate` a formato ISO (solo la parte de la fecha)
+                  const selectedDateISO = new Date(selectedDate).toISOString().split('T')[0];
+
+                  // Buscar la reserva existente para este `timeSlot` y fecha seleccionada
+                  const existingReservation = slot.reservations.find(res => {
+                      const reservationDateISO = new Date(res.date).toISOString().split('T')[0];
+                      return reservationDateISO === selectedDateISO;
+                  });
+
+                  // Calcular el número de reservas existentes para este `timeSlot`
+                  const reserved = existingReservation ? existingReservation.currentReservations : 0;
+                  const available = slot.maxReservations - reserved; // Calcular las reservas disponibles
+
+                  // Crear la opción para el selector
+                  const option = document.createElement('option');
+                  option.value = `${slot.startTime}-${slot.endTime}`;
+                  option.textContent = `${slot.startTime} - ${slot.endTime} (${available} available)`;
+
+                  // Agregar solo si hay disponibilidad en el intervalo de tiempo
+                  if (available > 0) {
+                      timeSlotSelect.appendChild(option);
+                  }
+              });
           } else {
             timeSlotSelect.disabled = true;
           }
