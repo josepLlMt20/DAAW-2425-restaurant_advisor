@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  h1 Your Reservations
+
+  if reservations.length
+    table.table.table-striped
+      thead
+        tr
+          th Store
+          th Address
+          th Date
+          th Time Slot
+          th Status
+          th Actions
+      tbody
+        each reservation in reservations
+          tr
+            td= reservation.store.name
+            td= reservation.store.address
+            td= reservation.date.toISOString().split('T')[0]
+            td= reservation.timeSlot
+            td 
+              if reservation.status === 'confirmed'
+                span.badge.bg-success Confirmed
+              else if reservation.status === 'cancelled'
+                span.badge.bg-danger Cancelled
+            td
+              if reservation.status === 'confirmed'
+                form(action=`/reservation/${reservation._id}/cancel` method="POST")
+                  button.btn.btn-danger.btn-sm(type="submit") Cancel
+  else
+    p.text-muted You have no reservations at this time.
+
+  script.
+    // Optional script to confirm cancellation
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        if (!confirm('Are you sure you want to cancel this reservation?')) {
+          e.preventDefault();
+        }
+      });
+    });

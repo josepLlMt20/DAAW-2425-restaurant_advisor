@@ -66,8 +66,8 @@ exports.addReservation = async (req, res) => {
 };
 
 exports.getUserReservations = async (req, res) => {
-    const reservations = await Reservation.find({ user: req.user._id, status: 'confirmed' }).populate('store');
-    res.render('reservations', { title: 'Reservations', reservations });
+    const reservations = await Reservation.find({ user: req.user._id}).populate('store');
+    res.render('userReservations', { title: 'Reservations', reservations });
 };
 
 exports.cancelReservation = async (req, res) => {

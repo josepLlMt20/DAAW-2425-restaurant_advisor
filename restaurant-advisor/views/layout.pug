@@ -31,6 +31,10 @@ html
           ul.navbar-nav.ms-auto
             if user
                 li.nav-item
+                    a.nav-link(href='/account/reservations')
+                        i.fa.fa-clock-o(style="padding-right:5px")
+                        | My Reservations
+                li.nav-item
                     a.nav-link(href='/account')
                         i.fa.fa-user-circle(style="padding-right:5px")
                         span #{user.name}

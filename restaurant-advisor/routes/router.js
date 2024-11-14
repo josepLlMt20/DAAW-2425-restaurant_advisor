@@ -118,12 +118,12 @@ router.get('/stores', catchErrors(storeController.getStores));
 router.get('/stores/page/:page', catchErrors(storeController.getStores)); 
 
 // SHOW all RESERVATIONS
-router.get('/reservations', authController.isLoggedIn, catchErrors(reservationController.getUserReservations));
+router.get('/account/reservations', authController.isLoggedIn, catchErrors(reservationController.getUserReservations));
 
 //ADD RESERVATION
 router.post('/store/:id/reservation', authController.isLoggedIn, catchErrors(reservationController.addReservation));
 
 //CANCEL RESERVATION
-router.get('/reservation/:id/cancel', authController.isLoggedIn, catchErrors(reservationController.cancelReservation));
+router.post('/reservation/:id/cancel', authController.isLoggedIn, catchErrors(reservationController.cancelReservation));
 
 module.exports = router;
