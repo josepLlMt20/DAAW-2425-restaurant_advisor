@@ -98,6 +98,9 @@ router.get('/stores/delete/:id',
 //SHOW TOP STORES 
 router.get('/top', catchErrors(storeController.getTopStores)); 
 
+//SHOW TOP STORES BY USER AND RATING
+router.get('/top/:userId', authController.isLoggedIn, catchErrors(storeController.getUserTopStores));
+
 //RECEIVE FORGOT ACCOUNT ACTION 
 router.post('/account/forgot', catchErrors(authController.forgot)); 
 

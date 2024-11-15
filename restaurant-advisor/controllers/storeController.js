@@ -2,7 +2,9 @@ const uuid = require('uuid');
 const { Jimp } = require('jimp');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const { use } = require('passport');
 const Store = mongoose.model('Store');
+const Review = mongoose.model('Review');
 
 //*** Verify Credentials 
 const confirmOwner = (store, user) => {
@@ -200,6 +202,22 @@ exports.getTopStores = async (req, res) => {
     const stores = await Store.getTopStores();
     res.render('topStores', { stores, title: 'Top Stores' });
 };
+
+exports.getUserTopStores = async (req, res) => {
+    const userReviews = await Review.find({ author: req.user._id })
+        .sort({ rating: -1 });
+    
+    const stores = [];
+    if (userReviews.length > 0) {
+        for (const review of userReviews) {
+            const store = await Store.findById(review.store);  // Espera a que cada tienda se resuelva
+            stores.push(store);
+        }
+    }
+    const hideButton = true;
+    text = `${req.user.name}'s top ${stores.length} stores`;
+    res.render('topStores', { stores, hideButton, text });
+}
 
 exports.getStores = async (req, res) => {
     const page = req.params.page || 1;
