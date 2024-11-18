@@ -204,20 +204,35 @@ exports.getTopStores = async (req, res) => {
 };
 
 exports.getUserTopStores = async (req, res) => {
-    const userReviews = await Review.find({ author: req.user._id })
-        .sort({ rating: -1 });
-    
-    const stores = [];
-    if (userReviews.length > 0) {
-        for (const review of userReviews) {
-            const store = await Store.findById(review.store);  // Espera a que cada tienda se resuelva
-            stores.push(store);
-        }
+    const userReviews = await Review.aggregate([
+        { $match: { author: req.user._id } }, 
+        { $sort: { store: 1, created: -1 } }, 
+        {
+            $group: {
+                _id: '$store', 
+                mostRecentReview: { $first: '$$ROOT' } 
+            }
+        },
+        { $sort: { 'mostRecentReview.rating': -1 } } 
+    ]);
+
+    if (userReviews.length === 0) {
+        return res.render('topStores', { stores: [], hideButton: true, text: `${req.user.name} has no top stores.` });
     }
+
+    const storeIds = userReviews.map(review => review._id);
+    const stores = await Store.find({ _id: { $in: storeIds } });
+
+    const storesMap = new Map(stores.map(store => [store._id.toString(), store]));
+    const sortedStores = storeIds.map(id => storesMap.get(id.toString()));
+
     const hideButton = true;
-    text = `${req.user.name}'s top ${stores.length} stores`;
-    res.render('topStores', { stores, hideButton, text });
+    const text = `${req.user.name}'s top ${sortedStores.length} stores`;
+
+    res.render('topStores', { stores: sortedStores, hideButton, text, personalReviews: userReviews });
 }
+
+
 
 exports.getStores = async (req, res) => {
     const page = req.params.page || 1;

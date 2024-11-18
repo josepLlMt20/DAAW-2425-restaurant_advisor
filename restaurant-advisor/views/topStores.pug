@@ -15,8 +15,12 @@ block content
                         th(scope="col") #
                         th(scope="col") Photo
                         th(scope="col") Name
-                        th(scope="col") Reviews
-                        th(scope="col") Average Rating
+                        if(!personalReviews)
+                            th(scope="col") Reviews
+                        if(!personalReviews)
+                            th(scope="col") Average Rating
+                        else
+                            th(scope="col") My Rating
                 tbody
                     each store, i in stores
                         tr
@@ -26,7 +30,8 @@ block content
                                     img(width=200 src=`/uploads/${store.photo || 'store.png'}` alt=store.name)
                             td 
                                 a(href=`/store/${store.slug}`)= store.name
-                            td #{store.reviews.length}
-                            td #{(store.averageRating).toFixed(1)} / 5
+                            if(!personalReviews)
+                                td #{store.reviews.length}
+                            td #{personalReviews ? personalReviews[i].mostRecentReview.rating : (store.averageRating).toFixed(1)} / 5                            
         else
             p.text-muted No reviews found. Start reviewing your favorite restaurants!
