@@ -33,22 +33,20 @@ mixin storeForm(store = {})
         .form-check
           input.form-check-input(type="checkbox" name="closedDays" value=day checked=(closedDays.includes(day)) id=day)
           label.form-check-label(for=day) #{day}
-
-    // Campos para Time Slots con un desplegable de días de la semana
     .mb-3
       label(class="form-label") Opening schedule:
       .time-slots-container
         - const timeSlots = store.timeSlots || []
         each timeSlot, index in timeSlots
           .time-slot.mb-3
-            label(for=`timeSlots[${index}][date]` class="form-label") Select a day
-            select.form-control(name=`timeSlots[${index}][date]` required)
+            label(for=`timeSlots[${index}][dayOfWeek]` class="form-label") Select a day
+            select.form-control(name=`timeSlots[${index}][dayOfWeek]` required)
               option(value="" disabled selected) Choose a day
               - const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
               - const closedDays = store.closedDays || []
               each day in daysOfWeek
                 - if (!closedDays.includes(day))
-                  option(value=day selected=(timeSlot.date === day)) #{day}
+                  option(value=day selected=(timeSlot.dayOfWeek === day)) #{day}
             label(for=`timeSlots[${index}][startTime]` class="form-label mt-2") Start time
             input.form-control(type="time" name=`timeSlots[${index}][startTime]` value=timeSlot.startTime required)
             label(for=`timeSlots[${index}][endTime]` class="form-label mt-2") End time
@@ -74,8 +72,8 @@ mixin storeForm(store = {})
 
       const newTimeSlotHTML = `
         <div class="time-slot mb-3">
-          <label for="timeSlots[${index}][date]" class="form-label">Select a day</label>
-          <select name="timeSlots[${index}][date]" class="form-control" required>
+          <label for="timeSlots[${index}][dayOfWeek]" class="form-label">Select a day</label>
+          <select name="timeSlots[${index}][dayOfWeek]" class="form-control" required>
             <option value="" disabled selected>Choose a day</option>
             ${availableDays.map(day => `<option value="${day}">${day}</option>`).join('')}
           </select>

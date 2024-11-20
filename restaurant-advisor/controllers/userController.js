@@ -13,7 +13,7 @@ exports.validationRules = () => {
         body('email', 'This Email is not valid')
             .isEmail()
             .normalizeEmail({
-                remove_dots: false,
+                gmail_remove_dots: false,
                 remove_extension: false,
                 gmail_remove_subaddress: false
             }),

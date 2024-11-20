@@ -27,7 +27,6 @@ block content
                     h5 Location
                     #map(style="height: 400px;")
 
-    // Mostrar Time Slots agrupados por día
     if groupedTimeSlots && Object.keys(groupedTimeSlots).length > 0
         .no-gutters.row.pt-3.col-lg-12
             .card
@@ -92,6 +91,6 @@ block scripts
 
             L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
                 .addTo(map)
-                .bindPopup('<strong>#{store.name}</strong><br>#{store.averageRating}')
+                .bindPopup('<strong>#{store.name}</strong><br>Rating: #{store.averageRating} / 5')
                 .openPopup();
         });

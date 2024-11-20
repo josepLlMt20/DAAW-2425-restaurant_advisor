@@ -47,13 +47,11 @@ exports.upload = async (req, res, next) => {
     const photo = await Jimp.read(req.file.buffer);
     photo.resize({ w: 800, h: Jimp.AUTO }); //width=800, height=AUTO
     await photo.write(`./public/uploads/${req.body.photo}`);
-    //photo saved in file system, keep going with the PIPELINE
     next();
 };
 
 
 exports.createStore = async (req, res) => {
-    //add the id of authenticated user object as author in body 
     req.body.author = req.user._id;
     const store = new Store(req.body);
     const savedStore = await store.save();
@@ -63,7 +61,6 @@ exports.createStore = async (req, res) => {
 };
 
 
-// Función de geocodificación
 async function geocodeAddress(address) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
     const response = await fetch(url);
@@ -79,7 +76,6 @@ async function geocodeAddress(address) {
     }
 }
 
-// Método de controlador que obtiene los datos de la tienda, geocodifica la dirección y agrupa los timeSlots
 exports.getStoreBySlug = async (req, res) => {
     const fetch = (await import('node-fetch')).default;
     const store = await Store.findOne({ slug: req.params.slug });
@@ -87,7 +83,6 @@ exports.getStoreBySlug = async (req, res) => {
         return res.status(404).render('error', { message: 'Store not found' });
     }
 
-    // Agrupar los timeSlots por día de la semana
     const groupedTimeSlots = store.timeSlots.reduce((acc, slot) => {
         if (!acc[slot.dayOfWeek]) {
             acc[slot.dayOfWeek] = [];
@@ -97,13 +92,10 @@ exports.getStoreBySlug = async (req, res) => {
     }, {});
 
     try {
-        // Intentar geocodificar la dirección de la tienda
         const coordinates = await geocodeAddress(store.address);
-        // Renderizar la vista pasando los timeSlots agrupados y las coordenadas
         res.render('store', { store, coordinates, groupedTimeSlots });
     } catch (error) {
         console.error(error);
-        // Si la geocodificación falla, renderiza la vista sin las coordenadas
         res.render('store', { store, coordinates: null, groupedTimeSlots });
     }
 };
@@ -236,14 +228,14 @@ exports.getUserTopStores = async (req, res) => {
 
 exports.getStores = async (req, res) => {
     const page = req.params.page || 1;
-    const limit = 8; // items in each page 
+    const limit = 8; 
     const skip = (page * limit) - limit;
 
     const storesPromise = Store
-        .find()  //look for ALL 
-        .skip(skip) //Skip items of former pages 
-        .limit(limit) //Take the desired number of items 
-        .sort({ created: 'desc' }); //sort them 
+        .find()   
+        .skip(skip) 
+        .limit(limit)  
+        .sort({ created: 'desc' }); 
 
     const countPromise = Store.countDocuments();
 

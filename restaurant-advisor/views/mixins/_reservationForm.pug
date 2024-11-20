@@ -38,9 +38,8 @@ mixin reservationForm(store)
         console.log("Día de la semana seleccionado:", selectedDay);
 
         if (selectedDate && !closedDays.includes(selectedDay)) {
-          availableSlots.length = 0; // Limpiar los slots disponibles para la nueva fecha
+          availableSlots.length = 0;
           
-          // Bucle para filtrar los slots disponibles según el día seleccionado
           timeSlots.forEach(function(slot) {
             console.log("Slot:", slot.dayOfWeek);
             if (slot.dayOfWeek === selectedDay) {
@@ -54,25 +53,20 @@ mixin reservationForm(store)
               timeSlotSelect.disabled = false;
 
               availableSlots.forEach(function(slot) {
-                  // Convertir `selectedDate` a formato ISO (solo la parte de la fecha)
                   const selectedDateISO = new Date(selectedDate).toISOString().split('T')[0];
 
-                  // Buscar la reserva existente para este `timeSlot` y fecha seleccionada
                   const existingReservation = slot.reservations.find(res => {
                       const reservationDateISO = new Date(res.date).toISOString().split('T')[0];
                       return reservationDateISO === selectedDateISO;
                   });
 
-                  // Calcular el número de reservas existentes para este `timeSlot`
                   const reserved = existingReservation ? existingReservation.currentReservations : 0;
-                  const available = slot.maxReservations - reserved; // Calcular las reservas disponibles
+                  const available = slot.maxReservations - reserved; 
 
-                  // Crear la opción para el selector
                   const option = document.createElement('option');
                   option.value = `${slot.startTime}-${slot.endTime}`;
                   option.textContent = `${slot.startTime} - ${slot.endTime} (${available} available)`;
 
-                  // Agregar solo si hay disponibilidad en el intervalo de tiempo
                   if (available > 0) {
                       timeSlotSelect.appendChild(option);
                   }

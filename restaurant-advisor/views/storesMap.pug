@@ -14,19 +14,19 @@ block scripts
 
   if storesData
       script.
-        var stores = !{JSON.stringify(storesData)}; // Embebe el objeto stores en el script
+        var stores = !{JSON.stringify(storesData)}; 
 
         var customIcon = L.icon({
-            iconUrl: '/dist/images/marker-icon.png',  // La ruta al icono
-            iconSize: [30, 30], // Tamaño del icono
-            iconAnchor: [12, 41], // Ancla del icono
-            popupAnchor: [3, -35], // Ancla del popup
-            shadowSize: [41, 41] // Tamaño de la sombra
+            iconUrl: '/dist/images/marker-icon.png',  
+            iconSize: [30, 30], 
+            iconAnchor: [12, 41], 
+            popupAnchor: [3, -35], 
+            shadowSize: [41, 41] 
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            const map = L.map('map').setView([0, 0], 2); // Vista inicial
-            // Cargar la capa de OpenStreetMap
+            const map = L.map('map').setView([0, 0], 2);
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '© OpenStreetMap contributors'
@@ -34,26 +34,21 @@ block scripts
 
             const storeCluster = L.markerClusterGroup();
             
-            // Crear los marcadores en el mapa con la información de cada tienda
             for (const storeName in stores) {
                 const storeData = stores[storeName];
                 const averageRating = storeData[0];
                 const coordinates = storeData[1];
                 console.log('Marcador:', storeName, coordinates, averageRating);
                 
-                // Verificar que las coordenadas existan y sean válidas
                 if (coordinates) {
                     const latitude = coordinates.lat;
                     const longitude = coordinates.lng;
 
-                    // Asegurarse de que latitude y longitude sean números válidos
                     if (typeof latitude === 'number' && typeof longitude === 'number') {
-                        // Colocar el marcador en las coordenadas de la tienda
                         console.log('Creando marcador:', storeName, latitude, longitude, averageRating);
                         const marker = L.marker([latitude, longitude], {icon: customIcon})
-                            .bindPopup('<strong>' + storeName + '</strong><br>Rating: ' + averageRating);
+                            .bindPopup('<strong>' + storeName + '</strong><br>Rating: ' + averageRating + ' / 5');
                         
-                        // Agregar el marcador al cluster
                         storeCluster.addLayer(marker);
                     }
                 }

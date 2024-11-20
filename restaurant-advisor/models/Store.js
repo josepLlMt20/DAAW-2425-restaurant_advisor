@@ -44,7 +44,7 @@ const storeSchema = new mongoose.Schema({
             maxReservations: Number,
             reservations: [
                 {
-                    date: Date, // fecha específica
+                    date: Date, // Date of the reservation
                     currentReservations: { type: Number, default: 0 }
                 }
             ]
