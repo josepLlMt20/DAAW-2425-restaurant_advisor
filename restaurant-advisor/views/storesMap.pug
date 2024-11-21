@@ -11,10 +11,11 @@ block content
 block scripts
   script(src="/dist/leaflet.js")
   script(src="/modules/leaflet.markercluster/dist/leaflet.markercluster.js")
+  script(src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js")
 
   if storesData
       script.
-        var stores = !{JSON.stringify(storesData)}; 
+        var stores = !{JSON.stringify(storesData)};
 
         var customIcon = L.icon({
             iconUrl: '/dist/images/marker-icon.png',  
@@ -32,28 +33,37 @@ block scripts
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
+            const geocoder = L.Control.Geocoder.nominatim();
             const storeCluster = L.markerClusterGroup();
-            
-            for (const storeName in stores) {
-                const storeData = stores[storeName];
-                const averageRating = storeData[0];
-                const coordinates = storeData[1];
-                console.log('Marcador:', storeName, coordinates, averageRating);
-                
-                if (coordinates) {
-                    const latitude = coordinates.lat;
-                    const longitude = coordinates.lng;
+            let bounds = L.latLngBounds();
 
-                    if (typeof latitude === 'number' && typeof longitude === 'number') {
-                        console.log('Creando marcador:', storeName, latitude, longitude, averageRating);
-                        const marker = L.marker([latitude, longitude], {icon: customIcon})
-                            .bindPopup('<strong>' + storeName + '</strong><br>Rating: ' + averageRating + ' / 5');
-                        
-                        storeCluster.addLayer(marker);
-                    }
-                }
-            }
+            const geocodePromises = stores.map(store => {
+                return new Promise((resolve) => {
+                    geocoder.geocode(store.address, function(results) {
+                        if (results && results.length > 0) {
+                            const result = results[0];
+                            const latitude = result.center.lat;
+                            const longitude = result.center.lng;
 
-            // Agregar el grupo de marcadores al mapa
-            map.addLayer(storeCluster);
+                            const marker = L.marker([latitude, longitude], {icon: customIcon})
+                                .bindPopup('<strong>' + store.name + '</strong><br>Rating: ' + store.averageRating + ' / 5<br>Address: ' + store.address);
+
+                            bounds.extend([latitude, longitude]);
+                            resolve(marker); 
+                        } else {
+                            console.log('Geocoding failed for:', store.address);
+                            resolve(null);
+                    }});
+                });
+            });
+
+            Promise.all(geocodePromises).then(markers => {
+                markers.filter(marker => marker !== null).forEach(marker => {
+                    storeCluster.addLayer(marker);
+                });
+
+                map.addLayer(storeCluster);
+            }).catch(err => {
+                console.log('Error procesando las direcciones:', err);
+            });
         });

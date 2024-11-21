@@ -60,22 +60,6 @@ exports.createStore = async (req, res) => {
     res.redirect(`/store/${savedStore.slug}`);
 };
 
-
-async function geocodeAddress(address) {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data && data.length > 0) {
-            return {
-            lat: parseFloat(data[0].lat),
-            lng: parseFloat(data[0].lon)
-        };
-    } else {
-        throw new Error('No se encontraron coordenadas para la dirección proporcionada.');
-    }
-}
-
 exports.getStoreBySlug = async (req, res) => {
     const fetch = (await import('node-fetch')).default;
     const store = await Store.findOne({ slug: req.params.slug });
@@ -92,8 +76,8 @@ exports.getStoreBySlug = async (req, res) => {
     }, {});
 
     try {
-        const coordinates = await geocodeAddress(store.address);
-        res.render('store', { store, coordinates, groupedTimeSlots });
+        const address = store.address;
+        res.render('store', { store, address, groupedTimeSlots });
     } catch (error) {
         console.error(error);
         res.render('store', { store, coordinates: null, groupedTimeSlots });
@@ -106,26 +90,16 @@ exports.getStores = async (req, res) => {
 };
 
 exports.getStoresMap = async (req, res) => {
-    const fetch = (await import('node-fetch')).default;
     const stores = await Store.find();
     if (!stores || stores.length === 0) {
         return res.status(404).render('error', { message: 'Stores not found' });
     }
 
-    const storesData = {};
-    
-    for (const store of stores) {
-        try {
-            const coordinates = await geocodeAddress(store.address);
-            storesData[store.name] = [store.averageRating, coordinates];
-        } catch (error) {
-            console.error(`Error geocoding address for store ${store.name}:`, error);
-            storesData[store.name] = [
-                store.averageRating || 0,
-                null // Si falla la geocodificación, dejar coordenadas como null
-            ];
-        }
-    }
+    const storesData = stores.map(store => ({
+        name: store.name,
+        address: store.address,
+        averageRating: store.averageRating || 0
+    }));
 
     res.render('storesMap', { storesData });
 };

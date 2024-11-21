@@ -20,7 +20,7 @@ block content
                         each tag in store.tags
                             a.badge.bg-light.text-primary(href=`/tags/${tag}`) #{tag}
 
-    if coordinates
+    if address 
         .no-gutters.row.pt-3.col-lg-12
             .card
                 .card-body
@@ -72,8 +72,9 @@ block content
 
 block scripts
   script(src="/dist/leaflet.js")
+  script(src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js")
 
-  if coordinates
+  if address 
       script.
         var customIcon = L.icon({
             iconUrl: '/dist/images/marker-icon.png',
@@ -82,15 +83,29 @@ block scripts
             popupAnchor: [3, -35],
             shadowSize: [41, 41]
         });
+
         document.addEventListener('DOMContentLoaded', function () {
-            const map = L.map('map').setView([#{coordinates.lat}, #{coordinates.lng}], 15);
+            const map = L.map('map').setView([0, 0], 2); // Coordenadas iniciales dummy
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            L.marker([#{coordinates.lat}, #{coordinates.lng}], {icon: customIcon})
-                .addTo(map)
-                .bindPopup('<strong>#{store.name}</strong><br>Rating: #{store.averageRating} / 5')
-                .openPopup();
+            // Crear instancia del geocoder
+            const geocoder = L.Control.Geocoder.nominatim();
+            // Usar geocoder para convertir la dirección a coordenadas
+            geocoder.geocode('#{store.address}', function(results) {
+                if (results && results.length > 0) {
+                    const { center } = results[0];
+                    map.setView(center, 15);
+
+                    L.marker(center, {icon: customIcon})
+                        .addTo(map)
+                        .bindPopup('<strong>#{store.name}</strong><br>Rating: #{store.averageRating} / 5')
+                        .openPopup();
+                } else {
+                    console.error('No se pudo geocodificar la dirección.');
+                }
+            });
         });
